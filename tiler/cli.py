@@ -5,10 +5,11 @@ from tiler.drawer import draw_solution, debug_shapes
 from tiler.shapes import SCORE_VARIANTS
 
 PACKAGE_ROOT = Path(__file__).resolve().parent
-DEFAULT_INPUT       = PACKAGE_ROOT.parent / "input.txt"
-DEFAULT_OUTPUT      = PACKAGE_ROOT.parent / "outputs"
-DEFAULT_DEBUG_PATH  = PACKAGE_ROOT.parent / "all_shapes_debug.png"
-DEFAULT_DEBUG       = False
+DEFAULT_INPUT               = PACKAGE_ROOT.parent / "input.txt"
+DEFAULT_OUTPUT              = PACKAGE_ROOT.parent / "outputs"
+DEFAULT_DEBUG_PATH          = PACKAGE_ROOT.parent / "all_shapes_debug.png"
+DEFAULT_DEBUG               = False
+DEFAULT_GET_ALL_SOLUTIONS   = False
 
 
 def parse_args():
@@ -36,6 +37,7 @@ def parse_args():
     parser.add_argument(
         "--debug",
         action="store_true",
+        default=DEFAULT_DEBUG,
         help="Generate debug image of all tetromino shapes"
     )
     parser.add_argument(
@@ -43,6 +45,12 @@ def parse_args():
         type=Path,
         default=DEFAULT_DEBUG_PATH,
         help=f"Path for debug shapes image (default: {DEFAULT_DEBUG_PATH})"
+    )
+    parser.add_argument(
+        "--get-all-solutions",
+        action="store_true",
+        default=DEFAULT_GET_ALL_SOLUTIONS,
+        help="Get all solutions for each grid (default: False)"
     )
     return parser.parse_args()
 
@@ -63,12 +71,18 @@ def main():
                 continue
             sols = enumerate_tilings(vals, N)
             print(f"Grid #{idx} ({N}×{N}): {len(sols)} solution(s)")
-            for vid, score_map in enumerate(SCORE_VARIANTS, 1):
-                scored = [(sum(score_map[p['piece']] for p in sol), sol) for sol in sols]
-                best_score, best_sol = max(scored, key=lambda x: x[0])
-                print(f" Variant {vid}: score={best_score}")
-                outp = args.output_dir / f"grid_{idx}_variant{vid}.png"
-                draw_solution(vals, N, best_sol, outp, args.cell_size)
+            if args.get_all_solutions:
+                for sol_idx, sol in enumerate(sols, start=1):
+                    print(f"  Solution {sol_idx}")
+                    outp = args.output_dir / f"grid_{idx}_sol{sol_idx}.png"
+                    draw_solution(vals, N, sol, outp, args.cell_size)
+            else:
+                for vid, score_map in enumerate(SCORE_VARIANTS, 1):
+                    scored = [(sum(score_map[p['piece']] for p in sol), sol) for sol in sols]
+                    best_score, best_sol = max(scored, key=lambda x: x[0])
+                    print(f" Variant {vid}: score={best_score}")
+                    outp = args.output_dir / f"grid_{idx}_variant{vid}.png"
+                    draw_solution(vals, N, best_sol, outp, args.cell_size)
     if args.debug:
         debug_shapes(args.debug_path)
         
