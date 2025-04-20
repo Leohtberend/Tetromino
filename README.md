@@ -46,11 +46,12 @@ python main.py [options]
 ```
 
 **Options**  
-- `-i, --input-file`  Path to input (default: `input.txt`)  
-- `-o, --output-dir`  Directory for PNGs (default: `outputs/`)  
-- `--cell-size`       Pixels per grid cell (default: 50)  
-- `--debug`           Generate `all_shapes_debug.png` for shape reference  
-- `--debug-path`      Where to save debug image (default: `all_shapes_debug.png`)
+- `-i, --input-file`    Path to input (default: `input.txt`)  
+- `-o, --output-dir`    Directory for PNGs (default: `outputs/`)  
+- `--cell-size`         Pixels per grid cell (default: 50)  
+- `--debug`             Generate `all_shapes_debug.png` for shape reference  
+- `--debug-path`        Where to save debug image (default: `all_shapes_debug.png`)
+- `--get-all-solutions` Generates all possible solutions
 
 ## Configuration
 
