@@ -22,7 +22,7 @@ Discover & draw tilings of tetromino shapes on any N×N grid.
 
 - **Input file**: `input.txt` at project root (or pass `-i` to point elsewhere).  
   - Each line is a comma-separated list of `0`/`1` values.  
-  - Total count per line must be a perfect square (e.g. 16, 25, 36…).
+  - The total number of values in each line of the input file must be a perfect square (e.g. 16, 25, 36…).
 
 **Example** (`input.txt`):
 
@@ -34,7 +34,7 @@ Discover & draw tilings of tetromino shapes on any N×N grid.
 ```
 
 - **Output folder**: `outputs/` (override with `-o`). 
-For each line you’ll get PNG(s)
+For each line in the input file, the program will generate one or more PNG files representing the tiling solutions.
 ```
 outputs/grid_<line#>_variant1.png
 ```
@@ -51,8 +51,9 @@ python main.py [options]
 - `--cell-size`         Pixels per grid cell (default: 50)  
 - `--debug`             Generate `all_shapes_debug.png` for shape reference  
 - `--debug-path`        Where to save debug image (default: `all_shapes_debug.png`)
-- `--get-all-solutions` Generates all possible solutions
+- `--get-all-solutions` Generates all possible tiling solutions for the given input grid (note: may significantly increase runtime for larger grids)
+- `--raw-render`        Skip all tetromino‐tiling logic and simply render grid
 
 ## Configuration
 
-All piece layouts and scoring weights live in **config.json** at the project root which can be modified to add new shapes
+The **config.json** file at the project root contains all piece layouts and scoring weights. You can modify this file to add new shapes or adjust existing configurations.

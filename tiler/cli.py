@@ -1,7 +1,8 @@
 import argparse
 from pathlib import Path
+
 from tiler.placer import enumerate_tilings
-from tiler.drawer import draw_solution, debug_shapes
+from tiler.drawer import draw_solution, debug_shapes, draw_raw_grid
 from tiler.shapes import SCORE_VARIANTS
 
 PACKAGE_ROOT = Path(__file__).resolve().parent
@@ -52,6 +53,9 @@ def parse_args():
         default=DEFAULT_GET_ALL_SOLUTIONS,
         help="Get all solutions for each grid (default: False)"
     )
+    parser.add_argument("--raw-render",
+        action="store_true",
+        help="skip tilings; render each 0/1 grid line as a standalone image")
     return parser.parse_args()
 
 
@@ -60,6 +64,21 @@ def main():
     # process grids
     args.output_dir.mkdir(parents=True, exist_ok=True)
     with args.input_file.open() as f:
+
+        if args.raw_render:
+            for idx, line in enumerate(f):
+                vals = list(map(int, line.strip().split(",")))
+                size = len(vals)
+                N = int(size**0.5)
+                if N*N != size:
+                    print(f"Grid #{idx}: {size} cells isn’t square, skipping")
+                    continue
+                outp = args.output_dir / f"grid_{idx}.png"
+                draw_raw_grid(vals, N, outp, args.cell_size)
+            if args.debug:
+                debug_shapes(args.debug_path)
+            return
+
         for idx, line in enumerate(f):
             vals = list(map(int, line.strip().split(",")))
             size = len(vals)
@@ -85,4 +104,3 @@ def main():
                     draw_solution(vals, N, best_sol, outp, args.cell_size)
     if args.debug:
         debug_shapes(args.debug_path)
-        

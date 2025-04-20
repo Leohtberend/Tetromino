@@ -63,3 +63,24 @@ def debug_shapes(out_path: Path) -> None:
     out_path.parent.mkdir(parents=True, exist_ok=True)
     img.save(out_path)
     print(f"Saved debug shapes to: {out_path}")
+
+
+def draw_raw_grid(vals: List[int], N: int, out_path: Path, cell_size: int = 50) -> None:
+    """Draw a raw N×N grid from 0/1 values: 0=gray fill, 1=white with black border."""
+    img = Image.new("RGB", (N*cell_size, N*cell_size), "white")
+    draw = ImageDraw.Draw(img)
+
+    for idx, v in enumerate(vals):
+        r, c = divmod(idx, N)
+        x0, y0 = c*cell_size, r*cell_size
+        x1, y1 = x0 + cell_size, y0 + cell_size
+
+        if v == 0:
+            draw.rectangle([x0, y0, x1, y1], fill="gray")
+        else:
+            draw.rectangle([x0, y0, x1, y1], fill="white")
+            draw.rectangle([x0, y0, x1, y1], outline="black")
+
+    out_path.parent.mkdir(parents=True, exist_ok=True)
+    img.save(out_path)
+    print(f"→ saved raw grid: {out_path}")
